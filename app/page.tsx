@@ -1,3 +1,12 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+
 export default function Home() {
   return (
     <main>
@@ -9,15 +18,31 @@ export default function Home() {
 
       {/* TODO: a "balance summary" card — placeholder text like "Total Balance: Rs. 0" for now */}
       <section className="max-w-md mx-auto mt-8 px-4">
-        <h2 className="text-lg font-semibold">Balance Summary</h2>
-        <p className="text-2xl font-bold">Total Balance: Rs. 0</p>
+        <Card>
+          <CardHeader>
+            <CardTitle>Balance Summary</CardTitle>
+            <CardDescription>Total Balance: Rs. 0</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">Total Balance: Rs. 0</p>
+          </CardContent>
+        </Card>
       </section>
 
       {/* TODO: a section for the transaction list — just a placeholder heading like "Recent Transactions" for now, no real data yet */}
       <section className="max-w-md mx-auto mt-8 px-4">
-        <h2 className="text-lg font-semibold">Recent Transactions</h2>
-        <p className="text-muted-foreground">No transactions to display.</p>
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Transactions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">No transactions to display.</p>
+          </CardContent>
+        </Card>
       </section>
+      <Button variant="outline" className="fixed bottom-20 right-4 left-4">
+        Add Transaction
+      </Button>
     </main>
   );
 }
