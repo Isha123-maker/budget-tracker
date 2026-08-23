@@ -1,48 +1,86 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { CATEGORIES, formatPKR } from "@/lib/categories";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Receipt, Plus } from "lucide-react";
 
 export default function Home() {
+  const totalBalance = 0; // TODO (Week 4): replace with real Zustand/DB state
+
   return (
-    <main>
-      {/* TODO: a header — app title, maybe a subtitle */}
-      <header className="max-w-md mx-auto pt-8 px-4">
-        <h1 className="text-xl font-bold">Budget Tracker</h1>
-        <p className="text-sm ">Track your expenses and manage your budget</p>
+    <main className="min-h-screen bg-background pb-36">
+      <header className="max-w-md mx-auto pt-10 px-5">
+        <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          Personal Ledger
+        </span>
+        <h1 className="font-heading text-3xl mt-1">PKR Budget Tracker</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Track your expenses and manage your budget
+        </p>
       </header>
 
-      {/* TODO: a "balance summary" card — placeholder text like "Total Balance: Rs. 0" for now */}
-      <section className="max-w-md mx-auto mt-8 px-4">
-        <Card>
+      <section className="max-w-md mx-auto mt-6 px-5">
+        <Card className="border-primary/15">
           <CardHeader>
-            <CardTitle>Balance Summary</CardTitle>
-            <CardDescription>Total Balance: Rs. 0</CardDescription>
+            <CardTitle className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+              Balance
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">Total Balance: Rs. 0</p>
+            <p className="font-heading text-4xl text-primary">
+              {formatPKR(totalBalance)}
+            </p>
           </CardContent>
         </Card>
       </section>
 
-      {/* TODO: a section for the transaction list — just a placeholder heading like "Recent Transactions" for now, no real data yet */}
-      <section className="max-w-md mx-auto mt-8 px-4">
+      <section className="max-w-md mx-auto mt-6 px-5">
+        <div className="relative">
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
+            {CATEGORIES.map((c) => {
+              const Icon = c.icon;
+              return (
+                <span
+                  key={c.id}
+                  className="flex items-center gap-1.5 shrink-0 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground"
+                >
+                  <Icon className="size-3.5 text-primary" />
+                  {c.label}
+                </span>
+              );
+            })}
+          </div>
+          <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-linear-to-l from-background to-transparent" />
+        </div>
+      </section>
+
+      <section className="max-w-md mx-auto mt-6 px-5">
         <Card>
           <CardHeader>
             <CardTitle>Recent Transactions</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">No transactions to display.</p>
+            <div className="flex flex-col items-center text-center py-8 gap-2">
+              <Receipt
+                className="size-8 text-muted-foreground"
+                strokeWidth={1.5}
+              />
+              <p className="text-sm text-muted-foreground">
+                No transactions yet. Add your first one below to start your
+                ledger.
+              </p>
+            </div>
           </CardContent>
         </Card>
       </section>
-      <Button variant="outline" className="fixed bottom-20 right-4 left-4">
-        Add Transaction
-      </Button>
+
+      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur">
+        <div className="max-w-md mx-auto px-5 py-3">
+          <Button className="w-full rounded-4xl" size="lg">
+            <Plus className="size-4" />
+            Add Transaction
+          </Button>
+        </div>
+      </div>
     </main>
   );
 }
