@@ -13,3 +13,67 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Category {
+  UTILITIES
+  COMMITTEES
+  GROCERIES
+  TRANSPORT
+  RENT
+  OTHER
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model User {
+  id           String            @id @default(cuid())
+  name         String
+  email        String            @unique
+  createdAt    DateTime          @default(now())
+  transactions Transaction[]
+  memberships  CommitteeMember[]
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  amount      Decimal         @db.Decimal(10, 2)
+  type        TransactionType
+  category    Category
+  note        String?
+  date        DateTime
+  createdAt   DateTime        @default(now())
+
+  user        User            @relation(fields: [userId], references: [id])
+  userId      String
+
+  committee   Committee?      @relation(fields: [committeeId], references: [id])
+  committeeId String?
+}
+
+model Committee {
+  id                 String            @id @default(cuid())
+  name               String
+  contributionAmount Decimal           @db.Decimal(10, 2)
+  cycleLengthDays     Int
+  createdAt          DateTime          @default(now())
+
+  members            CommitteeMember[]
+  transactions       Transaction[]
+}
+
+model CommitteeMember {
+  id                String    @id @default(cuid())
+  turnOrder         Int
+  hasReceivedPayout Boolean   @default(false)
+
+  committee         Committee @relation(fields: [committeeId], references: [id])
+  committeeId       String
+
+  user              User      @relation(fields: [userId], references: [id])
+  userId            String
+
+  @@unique([committeeId, userId])
+}
