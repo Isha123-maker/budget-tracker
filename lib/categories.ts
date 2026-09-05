@@ -1,4 +1,6 @@
 import { Zap, Users, ShoppingCart, Car, Home, MoreHorizontal, type LucideIcon } from "lucide-react"
+import { Category as PrismaCategory } from "@/lib/generated/prisma/client"
+
 
 export type CategoryId = "utilities" | "committees" | "groceries" | "transport" | "rent" | "other"
 
@@ -19,4 +21,14 @@ export const CATEGORIES: Category[] = [
 
 export function formatPKR(amount: number): string {
   return `Rs. ${amount.toLocaleString("en-PK")}`
+}
+
+// Frontend (lowercase) -> Database (UPPERCASE)
+export function toDbCategory(id: CategoryId): PrismaCategory {
+  return id.toUpperCase() as PrismaCategory
+}
+
+// Database (UPPERCASE) -> Frontend (lowercase)
+export function fromDbCategory(category: PrismaCategory): CategoryId {
+  return category.toLowerCase() as CategoryId
 }
