@@ -3,12 +3,10 @@
 import { useState, useEffect } from "react";
 import {
   CATEGORIES,
-  formatPKR,
   fromDbCategory,
   toDbCategory,
   type CategoryId,
 } from "@/lib/categories";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,7 +24,10 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Receipt, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
+import { BalanceCard } from "@/components/budget/BalanceCard";
+import { CategoryFilter } from "@/components/budget/CategoryFilter";
+import { TransactionList } from "@/components/budget/TransactionList";
 
 type Transaction = {
   id: string;
@@ -48,6 +49,9 @@ export default function Home() {
   const [category, setCategory] = useState<CategoryId>("groceries");
   const [note, setNote] = useState("");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(
+    null,
+  );
 
   async function fetchTransactions() {
     const res = await fetch("/api/transactions");
@@ -104,6 +108,12 @@ export default function Home() {
     return t.type === "INCOME" ? sum + amt : sum - amt;
   }, 0);
 
+  const filteredTransactions = selectedCategory
+    ? transactions.filter(
+        (t) => fromDbCategory(t.category as never) === selectedCategory,
+      )
+    : transactions;
+
   return (
     <main className="min-h-screen bg-background pb-36">
       <header className="max-w-md mx-auto pt-10 px-5">
@@ -117,96 +127,21 @@ export default function Home() {
       </header>
 
       <section className="max-w-md mx-auto mt-6 px-5">
-        <Card className="border-primary/15">
-          <CardHeader>
-            <CardTitle className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-              Balance
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="font-heading text-4xl text-primary">
-              {formatPKR(totalBalance)}
-            </p>
-          </CardContent>
-        </Card>
+        <BalanceCard totalBalance={totalBalance} />
       </section>
 
       <section className="max-w-md mx-auto mt-6 px-5">
-        <div className="relative">
-          <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
-            {CATEGORIES.map((c) => {
-              const Icon = c.icon;
-              return (
-                <span
-                  key={c.id}
-                  className="flex items-center gap-1.5 shrink-0 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground"
-                >
-                  <Icon className="size-3.5 text-primary" />
-                  {c.label}
-                </span>
-              );
-            })}
-          </div>
-          <div className="pointer-events-none absolute right-0 top-0 bottom-1 w-8 bg-linear-to-l from-background to-transparent" />
-        </div>
+        <CategoryFilter
+          selectedCategory={selectedCategory}
+          onSelectCategory={(id) => setSelectedCategory(id)}
+        />
       </section>
 
       <section className="max-w-md mx-auto mt-6 px-5">
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Transactions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {transactions.length === 0 ? (
-              <div className="flex flex-col items-center text-center py-8 gap-2">
-                <Receipt
-                  className="size-8 text-muted-foreground"
-                  strokeWidth={1.5}
-                />
-                <p className="text-sm text-muted-foreground">
-                  No transactions yet. Add your first one below to start your
-                  ledger.
-                </p>
-              </div>
-            ) : (
-              <ul className="flex flex-col gap-3">
-                {transactions.map((t) => {
-                  const categoryId = fromDbCategory(
-                    t.category as never,
-                  ) as CategoryId;
-                  const categoryMeta = CATEGORIES.find(
-                    (c) => c.id === categoryId,
-                  );
-                  const Icon = categoryMeta?.icon ?? Receipt;
-
-                  return (
-                    <li
-                      key={t.id}
-                      className="flex items-center justify-between text-sm"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Icon className="size-4 text-muted-foreground" />
-                        <span>
-                          {t.note || categoryMeta?.label || t.category}
-                        </span>
-                      </div>
-                      <span
-                        className={
-                          t.type === "INCOME"
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }
-                      >
-                        {t.type === "INCOME" ? "+" : "-"}
-                        {formatPKR(Number(t.amount))}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </CardContent>
-        </Card>
+        <TransactionList
+          transactions={filteredTransactions}
+          selectedCategory={selectedCategory}
+        />
       </section>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur">
