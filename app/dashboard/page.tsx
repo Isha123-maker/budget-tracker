@@ -83,7 +83,6 @@ export default function Home() {
           category: toDbCategory(category),
           note,
           date,
-          userId: "cmtfm2p6q0000tlk8t6gtmoj1", // TODO: replace with real logged-in user once auth exists
         }),
       });
 

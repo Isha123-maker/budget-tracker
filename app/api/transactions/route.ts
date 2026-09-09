@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { getOrCreateUser } from "@/lib/get-or-create-user"; // NEW import
+
 
 // GET /api/transactions — fetch all transactions
 export async function GET() {
@@ -18,10 +20,13 @@ export async function GET() {
 }
 
 // POST /api/transactions — create a new transaction
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { amount, type, category, note, date, userId } = body
+    const { amount, type, category, note, date } = body // note: userId removed from here
+
+    const dbUser = await getOrCreateUser(); // NEW: get the real logged-in user
 
     const transaction = await prisma.transaction.create({
       data: {
@@ -30,7 +35,7 @@ export async function POST(request: Request) {
         category,
         note,
         date: new Date(date),
-        userId,
+        userId: dbUser.id, // NEW: use the real database ID, not one from the request body
       },
     })
 
