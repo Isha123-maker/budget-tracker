@@ -87,7 +87,10 @@ export default function Home() {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to add transaction");
+        const errorData = await res.json();
+        throw new Error(
+          errorData.error?.issues?.[0]?.message || "Failed to add transaction",
+        );
       }
 
       setAmount("");

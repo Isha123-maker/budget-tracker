@@ -28,6 +28,11 @@ enum TransactionType {
   EXPENSE
 }
 
+enum CommitteeRole {
+  ADMIN
+  MEMBER
+}
+
 model User {
   id           String            @id @default(cuid())
   clerkId      String            @unique
@@ -69,6 +74,7 @@ model CommitteeMember {
   id                String    @id @default(cuid())
   turnOrder         Int
   hasReceivedPayout Boolean   @default(false)
+  role CommitteeRole @default(MEMBER)
 
   committee         Committee @relation(fields: [committeeId], references: [id])
   committeeId       String
