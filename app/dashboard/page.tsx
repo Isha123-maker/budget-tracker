@@ -38,10 +38,52 @@ type Transaction = {
   date: string;
 };
 
+type Insight = {
+  summary: string;
+  topCategory: string;
+  tip: string;
+};
+
 export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [insight, setInsight] = useState<Insight | null>(null);
+  const [insightLoading, setInsightLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadInsight() {
+      const maxAttempts = 3;
+
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+          const res = await fetch("/api/insights");
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.error || "Failed to load insight");
+          }
+
+          setInsight(data);
+          setInsightLoading(false);
+          return; // success, stop here — don't try again
+        } catch (error) {
+          console.error(`Insight attempt ${attempt} failed:`, error);
+
+          if (attempt === maxAttempts) {
+            // ran out of tries, give up and show the "couldn't load" message
+            setInsight(null);
+            setInsightLoading(false);
+          } else {
+            // wait a bit before trying again (rate limit needs a moment to clear)
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+          }
+        }
+      }
+    }
+
+    loadInsight();
+  }, []);
 
   // form field state
   const [amount, setAmount] = useState("");
@@ -127,6 +169,32 @@ export default function Home() {
           Track your expenses and manage your budget
         </p>
       </header>
+
+      <section className="max-w-md mx-auto mt-6 px-5">
+        <div className="rounded-xl border border-primary/15 bg-card p-4">
+          <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">
+            AI Insight
+          </p>
+          {insightLoading ? (
+            <p className="text-sm text-muted-foreground">
+              Analyzing your spending...
+            </p>
+          ) : insight ? (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm">{insight.summary}</p>
+              <p className="text-sm">
+                <span className="font-medium">Top category:</span>{" "}
+                {insight.topCategory}
+              </p>
+              <p className="text-sm text-muted-foreground">💡 {insight.tip}</p>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Could not load insight right now.
+            </p>
+          )}
+        </div>
+      </section>
 
       <section className="max-w-md mx-auto mt-6 px-5">
         <BalanceCard totalBalance={totalBalance} />
