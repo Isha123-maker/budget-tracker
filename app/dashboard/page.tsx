@@ -28,6 +28,8 @@ import { Plus } from "lucide-react";
 import { BalanceCard } from "@/components/budget/BalanceCard";
 import { CategoryFilter } from "@/components/budget/CategoryFilter";
 import { TransactionList } from "@/components/budget/TransactionList";
+import { aggregateWeekly } from "@/lib/aggregateWeekly";
+import { SpendingTrendChart } from "@/components/budget/SpendingTrendChart";
 
 type Transaction = {
   id: string;
@@ -158,6 +160,8 @@ export default function Home() {
       )
     : transactions;
 
+  const weeklyData = aggregateWeekly(transactions);
+
   return (
     <main className="min-h-screen bg-background pb-36">
       <header className="max-w-md mx-auto pt-10 px-5">
@@ -212,6 +216,10 @@ export default function Home() {
           transactions={filteredTransactions}
           selectedCategory={selectedCategory}
         />
+      </section>
+
+      <section className="max-w-md mx-auto mt-6 px-5">
+        <SpendingTrendChart data={weeklyData} />
       </section>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur">

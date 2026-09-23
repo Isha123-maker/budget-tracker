@@ -1,22 +1,20 @@
 // prisma/seed.ts
-// This file puts a few practice rows into your empty database tables.
-// Run it with: npx prisma db seed
-
-// prisma/seed.ts
 import { PrismaClient } from "../lib/generated/prisma/client";
 
 const prisma = new PrismaClient();
 
+const ISHA_CLERK_ID = "user_3J31F8GA4qaE0fvgYyQmINm9Fyu";
+
 async function main() {
-  const user = await prisma.user.upsert({
-    where: { clerkId: "seed_fake_clerk_id" },
-    update: {},
-    create: {
-      clerkId: "seed_fake_clerk_id",
-      name: "Noor",
-      email: "noor@example.com",
-    },
+  const user = await prisma.user.findUnique({
+    where: { clerkId: ISHA_CLERK_ID },
   });
+
+  if (!user) {
+    throw new Error(
+      "Isha's user not found. Sign in through Clerk at least once so getOrCreateUser() creates her row, then re-run this seed."
+    );
+  }
 
   const committee = await prisma.committee.upsert({
     where: { id: "seed-committee-id" },
@@ -40,7 +38,7 @@ async function main() {
     },
   });
 
-  // Clear old test transactions so we don't pile up duplicates on re-run
+  // Clear old transactions for Isha so re-running this doesn't pile up duplicates
   await prisma.transaction.deleteMany({ where: { userId: user.id } });
 
   await prisma.transaction.createMany({
