@@ -1,4 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { CATEGORIES, formatPKR, fromDbCategory, type CategoryId } from "@/lib/categories";
 import { Receipt } from "lucide-react";
 
@@ -11,6 +15,8 @@ type Transaction = {
   date: string;
 };
 
+const PREVIEW_COUNT = 5;
+
 export function TransactionList({
   transactions,
   selectedCategory,
@@ -18,6 +24,12 @@ export function TransactionList({
   transactions: Transaction[];
   selectedCategory: CategoryId | null;
 }) {
+  const [showAll, setShowAll] = useState(false);
+
+  const visibleTransactions = showAll
+    ? transactions
+    : transactions.slice(0, PREVIEW_COUNT);
+
   return (
     <Card>
       <CardHeader>
@@ -34,26 +46,41 @@ export function TransactionList({
             </p>
           </div>
         ) : (
-          <ul className="flex flex-col gap-3">
-            {transactions.map((t) => {
-              const categoryId = fromDbCategory(t.category as never) as CategoryId;
-              const categoryMeta = CATEGORIES.find((c) => c.id === categoryId);
-              const Icon = categoryMeta?.icon ?? Receipt;
+          <>
+            <ul className="flex flex-col gap-3">
+              {visibleTransactions.map((t) => {
+                const categoryId = fromDbCategory(t.category as never) as CategoryId;
+                const categoryMeta = CATEGORIES.find((c) => c.id === categoryId);
+                const Icon = categoryMeta?.icon ?? Receipt;
 
-              return (
-                <li key={t.id} className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <Icon className="size-4 text-muted-foreground" />
-                    <span>{t.note || categoryMeta?.label || t.category}</span>
-                  </div>
-                  <span className={t.type === "INCOME" ? "text-green-600" : "text-red-600"}>
-                    {t.type === "INCOME" ? "+" : "-"}
-                    {formatPKR(Number(t.amount))}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
+                return (
+                  <li key={t.id} className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <Icon className="size-4 text-muted-foreground" />
+                      <span>{t.note || categoryMeta?.label || t.category}</span>
+                    </div>
+                    <span className={t.type === "INCOME" ? "text-green-600" : "text-destructive"}>
+                      {t.type === "INCOME" ? "+" : "-"}
+                      {formatPKR(Number(t.amount))}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {transactions.length > PREVIEW_COUNT && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full mt-3"
+                onClick={() => setShowAll(!showAll)}
+              >
+                {showAll
+                  ? "Show less"
+                  : `View all ${transactions.length} transactions`}
+              </Button>
+            )}
+          </>
         )}
       </CardContent>
     </Card>

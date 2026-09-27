@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-slate-50 px-6 text-slate-900">
+    <main className="min-h-screen bg-background px-6 text-foreground">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col">
         
         {/* Navbar */}
         <nav className="flex items-center justify-between py-6">
           <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-xl text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-xl text-primary-foreground">
               ₨
             </div>
             <span className="font-heading text-xl font-bold">
@@ -28,17 +28,17 @@ export default function LandingPage() {
 
             {/* Left */}
             <div>
-              <div className="mb-6 inline-flex rounded-full bg-emerald-100 px-4 py-2 text-sm font-medium text-emerald-700">
+              <div className="mb-6 inline-flex rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
                 🇵🇰 Built for everyday Pakistani spending
               </div>
 
               <h1 className="font-heading text-5xl font-bold leading-tight tracking-tight md:text-6xl">
                 Your money.
                 <br />
-                <span className="text-emerald-600">Your control.</span>
+                <span className="text-primary">Your control.</span>
               </h1>
 
-              <p className="mt-6 max-w-lg text-lg leading-8 text-slate-500">
+              <p className="mt-6 max-w-lg text-lg leading-8 text-muted-foreground">
                 Track your spending, manage your kameti, and understand where
                 your PKR is going — all in one simple place.
               </p>
@@ -47,7 +47,7 @@ export default function LandingPage() {
                 <Link href="/dashboard">
                   <Button
                     size="lg"
-                    className="rounded-xl bg-emerald-600 px-7 hover:bg-emerald-700"
+                    className="rounded-xl px-7"
                   >
                     Get Started →
                   </Button>
@@ -62,19 +62,19 @@ export default function LandingPage() {
                 </Button>
               </div>
 
-              <div className="mt-10 flex gap-8 text-sm text-slate-500">
+              <div className="mt-10 flex gap-8 text-sm text-muted-foreground">
                 <div>
-                  <p className="font-bold text-slate-900">100%</p>
+                  <p className="font-bold text-foreground">100%</p>
                   <p>Personal</p>
                 </div>
 
                 <div>
-                  <p className="font-bold text-slate-900">PKR</p>
+                  <p className="font-bold text-foreground">PKR</p>
                   <p>Focused</p>
                 </div>
 
                 <div>
-                  <p className="font-bold text-slate-900">Simple</p>
+                  <p className="font-bold text-foreground">Simple</p>
                   <p>To use</p>
                 </div>
               </div>
@@ -82,30 +82,30 @@ export default function LandingPage() {
 
             {/* Right - Fake dashboard preview */}
             <div className="relative">
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-200/70">
+              <div className="rounded-3xl border border-border bg-card p-6 shadow-2xl shadow-black/5">
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-muted-foreground">
                       Total Balance
                     </p>
-                    <h2 className="mt-1 text-3xl font-bold">
+                    <h2 className="mt-1 text-3xl font-bold text-card-foreground">
                       Rs. 84,500
                     </h2>
                   </div>
 
-                  <div className="rounded-xl bg-emerald-100 px-3 py-2 text-sm font-medium text-emerald-700">
+                  <div className="rounded-xl bg-primary/10 px-3 py-2 text-sm font-medium text-primary">
                     +12.5%
                   </div>
                 </div>
 
-                <div className="mt-8 h-32 rounded-2xl bg-linear-to-r from-emerald-50 to-teal-50 p-5">
+                <div className="mt-8 h-32 rounded-2xl bg-secondary p-5">
                   <div className="flex h-full items-end gap-3">
                     {[35, 55, 45, 70, 50, 85, 65, 95].map(
                       (height, index) => (
                         <div
                           key={index}
-                          className="flex-1 rounded-t-lg bg-emerald-500"
+                          className="flex-1 rounded-t-lg bg-primary"
                           style={{ height: `${height}%` }}
                         />
                       )
@@ -114,16 +114,16 @@ export default function LandingPage() {
                 </div>
 
                 <div className="mt-6 grid grid-cols-2 gap-4">
-                  <div className="rounded-2xl bg-slate-50 p-4">
-                    <p className="text-xs text-slate-500">Income</p>
-                    <p className="mt-2 font-bold text-emerald-600">
+                  <div className="rounded-2xl bg-card p-4">
+                    <p className="text-xs text-muted-foreground">Income</p>
+                    <p className="mt-2 font-bold text-primary">
                       + Rs. 120k
                     </p>
                   </div>
 
-                  <div className="rounded-2xl bg-slate-50 p-4">
-                    <p className="text-xs text-slate-500">Expenses</p>
-                    <p className="mt-2 font-bold text-red-500">
+                  <div className="rounded-2xl bg-card p-4">
+                    <p className="text-xs text-muted-foreground">Expenses</p>
+                    <p className="mt-2 font-bold text-destructive">
                       - Rs. 35.5k
                     </p>
                   </div>
@@ -132,11 +132,11 @@ export default function LandingPage() {
               </div>
 
               {/* Floating card */}
-              <div className="absolute -bottom-6 -left-6 rounded-2xl border bg-white p-4 shadow-xl">
-                <p className="text-xs text-slate-500">
+              <div className="absolute -bottom-6 -left-6 rounded-2xl border border-border bg-card p-4 shadow-xl">
+                <p className="text-xs text-muted-foreground">
                   Monthly Savings
                 </p>
-                <p className="mt-1 font-bold text-emerald-600">
+                <p className="mt-1 font-bold text-primary">
                   Rs. 42,300
                 </p>
               </div>

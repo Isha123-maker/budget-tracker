@@ -164,7 +164,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background pb-36">
-      <header className="max-w-md mx-auto pt-10 px-5">
+      <header className="max-w-5xl mx-auto pt-10 px-5">
         <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
           Personal Ledger
         </span>
@@ -174,56 +174,58 @@ export default function Home() {
         </p>
       </header>
 
-      <section className="max-w-md mx-auto mt-6 px-5">
-        <div className="rounded-xl border border-primary/15 bg-card p-4">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">
-            AI Insight
-          </p>
-          {insightLoading ? (
-            <p className="text-sm text-muted-foreground">
-              Analyzing your spending...
+      <section className="max-w-5xl mx-auto mt-6 px-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-xl border border-primary/15 bg-card p-4">
+            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">
+              AI Insight
             </p>
-          ) : insight ? (
-            <div className="flex flex-col gap-2">
-              <p className="text-sm">{insight.summary}</p>
-              <p className="text-sm">
-                <span className="font-medium">Top category:</span>{" "}
-                {insight.topCategory}
+            {insightLoading ? (
+              <p className="text-sm text-muted-foreground">
+                Analyzing your spending...
               </p>
-              <p className="text-sm text-muted-foreground">💡 {insight.tip}</p>
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Could not load insight right now.
-            </p>
-          )}
+            ) : insight ? (
+              <div className="flex flex-col gap-2">
+                <p className="text-sm">{insight.summary}</p>
+                <p className="text-sm">
+                  <span className="font-medium">Top category:</span>{" "}
+                  {insight.topCategory}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  💡 {insight.tip}
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Could not load insight right now.
+              </p>
+            )}
+          </div>
+
+          <BalanceCard totalBalance={totalBalance} />
         </div>
       </section>
 
-      <section className="max-w-md mx-auto mt-6 px-5">
-        <BalanceCard totalBalance={totalBalance} />
-      </section>
-
-      <section className="max-w-md mx-auto mt-6 px-5">
+      <section className="max-w-5xl mx-auto mt-6 px-5">
         <CategoryFilter
           selectedCategory={selectedCategory}
           onSelectCategory={(id) => setSelectedCategory(id)}
         />
       </section>
 
-      <section className="max-w-md mx-auto mt-6 px-5">
+      <section className="max-w-5xl mx-auto mt-6 px-5">
         <TransactionList
           transactions={filteredTransactions}
           selectedCategory={selectedCategory}
         />
       </section>
 
-      <section className="max-w-md mx-auto mt-6 px-5">
+      <section className="max-w-5xl mx-auto mt-6 px-5">
         <SpendingTrendChart data={weeklyData} />
       </section>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur">
-        <div className="max-w-md mx-auto px-5 py-3">
+        <div className="max-w-5xl mx-auto px-5 py-3">
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <Button
               className="w-full rounded-4xl"
@@ -348,6 +350,9 @@ export default function Home() {
           </Dialog>
         </div>
       </div>
+      <footer className="max-w-5xl mx-auto mt-10 px-5 pb-8 text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} PKR Budget Tracker. Built by Noor.
+      </footer>
     </main>
   );
 }
