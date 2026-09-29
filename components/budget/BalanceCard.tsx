@@ -10,7 +10,7 @@ export function BalanceCard({ totalBalance }: { totalBalance: number }) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="font-heading text-4xl text-primary">
+        <p data-testid="balance" className="font-heading text-4xl text-primary">
           {formatPKR(totalBalance)}
         </p>
       </CardContent>

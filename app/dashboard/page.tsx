@@ -78,7 +78,7 @@ export default function Home() {
             setInsightLoading(false);
           } else {
             // wait a bit before trying again (rate limit needs a moment to clear)
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await new Promise((resolve) => setTimeout(resolve, 5000));
           }
         }
       }
@@ -138,6 +138,8 @@ export default function Home() {
       }
 
       setAmount("");
+      setType("EXPENSE");
+      setCategory("groceries");
       setNote("");
       setDialogOpen(false);
       await fetchTransactions();

@@ -44,7 +44,7 @@ Rules:
 - tip: a real, actionable suggestion for how the user could spend less money. It must be a piece of advice, not an observation about past spending.`;
 
     const { object } = await generateObject({
-      model: openrouter("z-ai/glm-5.2:free"),
+      model: openrouter("openrouter/free"),
       schema: insightSchema,
       prompt,
     });

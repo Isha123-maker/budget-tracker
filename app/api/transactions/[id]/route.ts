@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
+import { getOrCreateUser } from "@/lib/get-or-create-user"
 
 // PATCH /api/transactions/[id] — update one transaction
 export async function PATCH(
@@ -8,6 +9,17 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params
+    const dbUser = await getOrCreateUser()
+
+    const existing = await prisma.transaction.findUnique({ where: { id } })
+
+    if (!existing || existing.userId !== dbUser.id) {
+      return NextResponse.json(
+        { error: "Transaction not found" },
+        { status: 404 }
+      )
+    }
+
     const body = await request.json()
     const { amount, type, category, note, date } = body
 
@@ -39,6 +51,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+    const dbUser = await getOrCreateUser()
+
+    const existing = await prisma.transaction.findUnique({ where: { id } })
+
+    if (!existing || existing.userId !== dbUser.id) {
+      return NextResponse.json(
+        { error: "Transaction not found" },
+        { status: 404 }
+      )
+    }
 
     await prisma.transaction.delete({
       where: { id },

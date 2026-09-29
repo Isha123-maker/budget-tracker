@@ -21,7 +21,10 @@ const transactionSchema = z.object({
 // GET /api/transactions — fetch all transactions
 export async function GET() {
   try {
+    const dbUser = await getOrCreateUser();
+
     const transactions = await prisma.transaction.findMany({
+      where: { userId: dbUser.id },
       orderBy: { date: "desc" },
     });
     return NextResponse.json(transactions);
