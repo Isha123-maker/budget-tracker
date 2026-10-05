@@ -1,27 +1,38 @@
-import { prisma } from "@/lib/prisma"
-import { NextResponse } from "next/server"
-import { getOrCreateUser } from "@/lib/get-or-create-user"
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { getOrCreateUser } from "@/lib/get-or-create-user";
+import { transactionUpdateSchema } from "@/lib/validation/transaction"
 
 // PATCH /api/transactions/[id] — update one transaction
 export async function PATCH(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = await params
-    const dbUser = await getOrCreateUser()
+    const { id } = await params;
+    const dbUser = await getOrCreateUser();
 
-    const existing = await prisma.transaction.findUnique({ where: { id } })
+    const existing = await prisma.transaction.findUnique({ where: { id } });
 
     if (!existing || existing.userId !== dbUser.id) {
       return NextResponse.json(
         { error: "Transaction not found" },
-        { status: 404 }
-      )
+        { status: 404 },
+      );
     }
 
-    const body = await request.json()
-    const { amount, type, category, note, date } = body
+    const body = await request.json();
+
+    const result = transactionUpdateSchema.safeParse(body);
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error.flatten() },
+        { status: 400 },
+      );
+    }
+
+    const { amount, type, category, note, date } = result.data;
 
     const transaction = await prisma.transaction.update({
       where: { id },
@@ -32,46 +43,46 @@ export async function PATCH(
         note,
         date: date ? new Date(date) : undefined,
       },
-    })
+    });
 
-    return NextResponse.json(transaction)
+    return NextResponse.json(transaction);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return NextResponse.json(
       { error: "Failed to update transaction" },
-      { status: 400 }
-    )
+      { status: 400 },
+    );
   }
 }
 
 // DELETE /api/transactions/[id] — delete one transaction
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = await params
-    const dbUser = await getOrCreateUser()
+    const { id } = await params;
+    const dbUser = await getOrCreateUser();
 
-    const existing = await prisma.transaction.findUnique({ where: { id } })
+    const existing = await prisma.transaction.findUnique({ where: { id } });
 
     if (!existing || existing.userId !== dbUser.id) {
       return NextResponse.json(
         { error: "Transaction not found" },
-        { status: 404 }
-      )
+        { status: 404 },
+      );
     }
 
     await prisma.transaction.delete({
       where: { id },
-    })
+    });
 
-    return NextResponse.json({ message: "Transaction deleted" })
+    return NextResponse.json({ message: "Transaction deleted" });
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return NextResponse.json(
       { error: "Failed to delete transaction" },
-      { status: 400 }
-    )
+      { status: 400 },
+    );
   }
 }

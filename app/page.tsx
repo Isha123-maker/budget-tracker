@@ -3,18 +3,15 @@ import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-background px-6 text-foreground">
+    <main className="min-h-screen scroll-smooth bg-background px-6 text-foreground">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col">
-        
         {/* Navbar */}
         <nav className="flex items-center justify-between py-6">
           <div className="flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-xl text-primary-foreground">
               ₨
             </div>
-            <span className="font-heading text-xl font-bold">
-              PKR Tracker
-            </span>
+            <span className="font-heading text-xl font-bold">PKR Tracker</span>
           </div>
 
           <Link href="/dashboard">
@@ -25,7 +22,6 @@ export default function LandingPage() {
         {/* Hero */}
         <section className="flex flex-1 items-center justify-center py-16">
           <div className="grid w-full items-center gap-16 md:grid-cols-2">
-
             {/* Left */}
             <div>
               <div className="mb-6 inline-flex rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
@@ -45,21 +41,16 @@ export default function LandingPage() {
 
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link href="/dashboard">
-                  <Button
-                    size="lg"
-                    className="rounded-xl px-7"
-                  >
+                  <Button size="lg" className="rounded-xl px-7">
                     Get Started →
                   </Button>
                 </Link>
 
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="rounded-xl"
-                >
-                  See how it works
-                </Button>
+                <Link href="#how-it-works">
+                  <Button size="lg" variant="outline" className="rounded-xl">
+                    See how it works
+                  </Button>
+                </Link>
               </div>
 
               <div className="mt-10 flex gap-8 text-sm text-muted-foreground">
@@ -83,7 +74,6 @@ export default function LandingPage() {
             {/* Right - Fake dashboard preview */}
             <div className="relative">
               <div className="rounded-3xl border border-border bg-card p-6 shadow-2xl shadow-black/5">
-
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">
@@ -101,24 +91,20 @@ export default function LandingPage() {
 
                 <div className="mt-8 h-32 rounded-2xl bg-secondary p-5">
                   <div className="flex h-full items-end gap-3">
-                    {[35, 55, 45, 70, 50, 85, 65, 95].map(
-                      (height, index) => (
-                        <div
-                          key={index}
-                          className="flex-1 rounded-t-lg bg-primary"
-                          style={{ height: `${height}%` }}
-                        />
-                      )
-                    )}
+                    {[35, 55, 45, 70, 50, 85, 65, 95].map((height, index) => (
+                      <div
+                        key={index}
+                        className="flex-1 rounded-t-lg bg-primary"
+                        style={{ height: `${height}%` }}
+                      />
+                    ))}
                   </div>
                 </div>
 
                 <div className="mt-6 grid grid-cols-2 gap-4">
                   <div className="rounded-2xl bg-card p-4">
                     <p className="text-xs text-muted-foreground">Income</p>
-                    <p className="mt-2 font-bold text-primary">
-                      + Rs. 120k
-                    </p>
+                    <p className="mt-2 font-bold text-primary">+ Rs. 120k</p>
                   </div>
 
                   <div className="rounded-2xl bg-card p-4">
@@ -128,20 +114,71 @@ export default function LandingPage() {
                     </p>
                   </div>
                 </div>
-
               </div>
 
-              {/* Floating card */}
-              <div className="absolute -bottom-6 -left-6 rounded-2xl border border-border bg-card p-4 shadow-xl">
-                <p className="text-xs text-muted-foreground">
-                  Monthly Savings
+              {/* Monthly savings card */}
+              <div className="ml-6 mt-4 w-fit rounded-2xl border border-border bg-card p-4 shadow-xl">
+                <p className="text-xs text-muted-foreground">Monthly Savings</p>
+                <p className="mt-1 font-bold text-primary">Rs. 42,300</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="how-it-works" className="border-t border-border py-20">
+          <div className="mx-auto max-w-5xl">
+            <div className="text-center">
+              <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                How it works
+              </p>
+
+              <h2 className="font-heading mt-2 text-3xl font-bold">
+                Simple money tracking
+              </h2>
+
+              <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+                Track your income and expenses, understand your spending, and
+                get useful insights about your financial habits.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              <div className="rounded-2xl border border-border bg-card p-6">
+                <div className="text-2xl">₨</div>
+
+                <h3 className="mt-4 font-semibold">1. Add your transactions</h3>
+
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  Record your income and everyday expenses in Pakistani Rupees.
                 </p>
-                <p className="mt-1 font-bold text-primary">
-                  Rs. 42,300
+              </div>
+
+              <div className="rounded-2xl border border-border bg-card p-6">
+                <div className="text-2xl">📊</div>
+
+                <h3 className="mt-4 font-semibold">
+                  2. Understand your spending
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  See your balance, categories, transactions, and spending
+                  trends in one place.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-border bg-card p-6">
+                <div className="text-2xl">💡</div>
+
+                <h3 className="mt-4 font-semibold">
+                  3. Get AI-powered insights
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  Get personalized suggestions based on your recent spending
+                  patterns.
                 </p>
               </div>
             </div>
-
           </div>
         </section>
       </div>

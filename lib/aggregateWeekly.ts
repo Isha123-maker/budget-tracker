@@ -12,9 +12,15 @@ type WeeklyPoint = {
 
 function getWeekStart(date: Date): string {
   const d = new Date(date);
+
   const day = d.getDay(); // 0 = Sunday, 1 = Monday, etc.
-  d.setDate(d.getDate() - day); // roll back to the Sunday of that week
-  return d.toISOString().slice(0, 10); // "2026-08-03" format
+  d.setDate(d.getDate() - day);
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const dayOfMonth = String(d.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${dayOfMonth}`;
 }
 
 export function aggregateWeekly(transactions: Transaction[]): WeeklyPoint[] {
@@ -24,7 +30,11 @@ export function aggregateWeekly(transactions: Transaction[]): WeeklyPoint[] {
     const weekKey = getWeekStart(new Date(t.date));
 
     if (!buckets[weekKey]) {
-      buckets[weekKey] = { week: weekKey, income: 0, expense: 0 };
+      buckets[weekKey] = {
+        week: weekKey,
+        income: 0,
+        expense: 0,
+      };
     }
 
     const amount = Number(t.amount);
@@ -36,6 +46,7 @@ export function aggregateWeekly(transactions: Transaction[]): WeeklyPoint[] {
     }
   }
 
-  // Convert the object of buckets into a sorted array (oldest week first)
-  return Object.values(buckets).sort((a, b) => a.week.localeCompare(b.week));
+  return Object.values(buckets).sort((a, b) =>
+    a.week.localeCompare(b.week)
+  );
 }

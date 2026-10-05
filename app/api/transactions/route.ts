@@ -1,22 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/get-or-create-user"; // NEW import
-import { z } from "zod";
+import { transactionSchema } from "@/lib/validation/transaction"
 
-const transactionSchema = z.object({
-  amount: z.number().positive(),
-  type: z.enum(["INCOME", "EXPENSE"]),
-  category: z.enum([
-    "UTILITIES",
-    "COMMITTEES",
-    "GROCERIES",
-    "TRANSPORT",
-    "RENT",
-    "OTHER",
-  ]),
-  note: z.string().optional(),
-  date: z.string(),
-});
 
 // GET /api/transactions — fetch all transactions
 export async function GET() {

@@ -1,107 +1,36 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  CATEGORIES,
-  fromDbCategory,
-  toDbCategory,
-  type CategoryId,
-} from "@/lib/categories";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { fromDbCategory, type CategoryId } from "@/lib/categories";
+import { Category as PrismaCategory } from "@/lib/generated/prisma/client";
 import { BalanceCard } from "@/components/budget/BalanceCard";
 import { CategoryFilter } from "@/components/budget/CategoryFilter";
 import { TransactionList } from "@/components/budget/TransactionList";
 import { aggregateWeekly } from "@/lib/aggregateWeekly";
 import { SpendingTrendChart } from "@/components/budget/SpendingTrendChart";
+import { AIInsightCard } from "@/components/budget/AIInsightCard";
+import { AddTransactionDialog } from "@/components/budget/AddTransactionDialog";
 
 type Transaction = {
   id: string;
   amount: string;
   type: "INCOME" | "EXPENSE";
-  category: string;
+  category: PrismaCategory;
   note: string | null;
   date: string;
 };
 
-type Insight = {
-  summary: string;
-  topCategory: string;
-  tip: string;
-};
-
 export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [insight, setInsight] = useState<Insight | null>(null);
-  const [insightLoading, setInsightLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadInsight() {
-      const maxAttempts = 3;
-
-      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        try {
-          const res = await fetch("/api/insights");
-          const data = await res.json();
-
-          if (!res.ok) {
-            throw new Error(data.error || "Failed to load insight");
-          }
-
-          setInsight(data);
-          setInsightLoading(false);
-          return; // success, stop here — don't try again
-        } catch (error) {
-          console.error(`Insight attempt ${attempt} failed:`, error);
-
-          if (attempt === maxAttempts) {
-            // ran out of tries, give up and show the "couldn't load" message
-            setInsight(null);
-            setInsightLoading(false);
-          } else {
-            // wait a bit before trying again (rate limit needs a moment to clear)
-            await new Promise((resolve) => setTimeout(resolve, 5000));
-          }
-        }
-      }
-    }
-
-    loadInsight();
-  }, []);
-
-  // form field state
-  const [amount, setAmount] = useState("");
-  const [type, setType] = useState<"INCOME" | "EXPENSE">("EXPENSE");
-  const [category, setCategory] = useState<CategoryId>("groceries");
-  const [note, setNote] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(
     null,
   );
 
-  async function fetchTransactions() {
+  const fetchTransactions = useCallback(async () => {
     const res = await fetch("/api/transactions");
     const data = await res.json();
     setTransactions(data);
-  }
+  }, []);
 
   useEffect(() => {
     async function loadTransactions() {
@@ -110,46 +39,8 @@ export default function Home() {
       setTransactions(data);
     }
 
-    loadTransactions();
+    void loadTransactions();
   }, []);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSubmitting(true);
-
-    try {
-      const res = await fetch("/api/transactions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: Number(amount),
-          type,
-          category: toDbCategory(category),
-          note,
-          date,
-        }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(
-          errorData.error?.issues?.[0]?.message || "Failed to add transaction",
-        );
-      }
-
-      setAmount("");
-      setType("EXPENSE");
-      setCategory("groceries");
-      setNote("");
-      setDialogOpen(false);
-      await fetchTransactions();
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong adding your transaction. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
 
   const totalBalance = transactions.reduce((sum, t) => {
     const amt = Number(t.amount);
@@ -158,7 +49,7 @@ export default function Home() {
 
   const filteredTransactions = selectedCategory
     ? transactions.filter(
-        (t) => fromDbCategory(t.category as never) === selectedCategory,
+        (t) => fromDbCategory(t.category) === selectedCategory,
       )
     : transactions;
 
@@ -178,31 +69,7 @@ export default function Home() {
 
       <section className="max-w-5xl mx-auto mt-6 px-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="rounded-xl border border-primary/15 bg-card p-4">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">
-              AI Insight
-            </p>
-            {insightLoading ? (
-              <p className="text-sm text-muted-foreground">
-                Analyzing your spending...
-              </p>
-            ) : insight ? (
-              <div className="flex flex-col gap-2">
-                <p className="text-sm">{insight.summary}</p>
-                <p className="text-sm">
-                  <span className="font-medium">Top category:</span>{" "}
-                  {insight.topCategory}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  💡 {insight.tip}
-                </p>
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Could not load insight right now.
-              </p>
-            )}
-          </div>
+          <AIInsightCard />
 
           <BalanceCard totalBalance={totalBalance} />
         </div>
@@ -226,132 +93,7 @@ export default function Home() {
         <SpendingTrendChart data={weeklyData} />
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 backdrop-blur">
-        <div className="max-w-5xl mx-auto px-5 py-3">
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <Button
-              className="w-full rounded-4xl"
-              size="lg"
-              onClick={() => setDialogOpen(true)}
-            >
-              <Plus className="size-4" />
-              Add Transaction
-            </Button>
-
-            <DialogContent className="bg-background max-w-sm">
-              <DialogHeader>
-                <DialogTitle className="text-xl">Add Transaction</DialogTitle>
-              </DialogHeader>
-
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-4 mt-2"
-              >
-                <div className="flex flex-col gap-1.5">
-                  <Label
-                    htmlFor="amount"
-                    className="text-xs uppercase tracking-wide text-muted-foreground"
-                  >
-                    Amount (Rs.)
-                  </Label>
-                  <Input
-                    id="amount"
-                    type="number"
-                    required
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="e.g. 1500"
-                    className="bg-background"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Type
-                  </Label>
-                  <Select
-                    value={type}
-                    onValueChange={(v) => setType(v as "INCOME" | "EXPENSE")}
-                  >
-                    <SelectTrigger className="w-full bg-background">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background">
-                      <SelectItem value="EXPENSE">Expense</SelectItem>
-                      <SelectItem value="INCOME">Income</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Category
-                  </Label>
-                  <Select
-                    value={category}
-                    onValueChange={(v) => setCategory(v as CategoryId)}
-                  >
-                    <SelectTrigger className="w-full bg-background">
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background">
-                      {CATEGORIES.map((c) => (
-                        <SelectItem key={c.id} value={c.id}>
-                          {c.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label
-                    htmlFor="note"
-                    className="text-xs uppercase tracking-wide text-muted-foreground"
-                  >
-                    Note (optional)
-                  </Label>
-                  <Input
-                    id="note"
-                    type="text"
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                    placeholder="e.g. Grocery run"
-                    className="bg-background"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label
-                    htmlFor="date"
-                    className="text-xs uppercase tracking-wide text-muted-foreground"
-                  >
-                    Date
-                  </Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    required
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="bg-background"
-                  />
-                </div>
-
-                <DialogFooter className="bg-transparent! border-0! p-0! mx-0! mb-0! mt-2">
-                  <Button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full"
-                  >
-                    {submitting ? "Saving..." : "Save Transaction"}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
+      <AddTransactionDialog onTransactionAdded={fetchTransactions} />
       <footer className="max-w-5xl mx-auto mt-10 px-5 pb-8 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} PKR Budget Tracker. Built by Noor.
       </footer>
