@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma migrate deploy && next build",
+    "build": "prisma generate && prisma migrate deploy && next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },
@@ -35,6 +35,7 @@
   "devDependencies": {
     "@clerk/testing": "^2.2.39",
     "@playwright/test": "^1.63.0",
+    "@prisma/nextjs-monorepo-workaround-plugin": "^7.10.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
