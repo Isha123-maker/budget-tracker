@@ -1,15 +1,5 @@
-import type { NextConfig } from "next";
-// @ts-expect-error This package does not provide TypeScript declarations.
-import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
+import type { NextConfig } from "next"
 
-const nextConfig: NextConfig = {
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.plugins.push(new PrismaPlugin());
-    }
+const nextConfig: NextConfig = {}
 
-    return config;
-  },
-};
-
-export default nextConfig;
+export default nextConfig
