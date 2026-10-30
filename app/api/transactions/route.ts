@@ -1,11 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/get-or-create-user"; // NEW import
-import { transactionSchema } from "@/lib/validation/transaction"
-
+import { transactionSchema } from "@/lib/validation/transaction";
+import { auth } from "@clerk/nextjs/server";
 
 // GET /api/transactions — fetch all transactions
 export async function GET() {
+  const { isAuthenticated } = await auth();
+
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const dbUser = await getOrCreateUser();
 
@@ -26,16 +31,18 @@ export async function GET() {
 // POST /api/transactions — create a new transaction
 
 export async function POST(request: Request) {
+  const { isAuthenticated } = await auth();
+
+  if (!isAuthenticated) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const body = await request.json();
 
     const result = transactionSchema.safeParse(body);
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: result.error }, { status: 400 });
     }
 
     const { amount, type, category, note, date } = result.data;
@@ -58,7 +65,7 @@ export async function POST(request: Request) {
     console.error(error);
     return NextResponse.json(
       { error: "Failed to create transaction" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { UserButton } from "@clerk/nextjs";
 import { fromDbCategory, type CategoryId } from "@/lib/categories";
 import { Category as PrismaCategory } from "@/lib/generated/prisma/client";
 import { BalanceCard } from "@/components/budget/BalanceCard";
@@ -58,15 +59,19 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background pb-36">
       <header className="max-w-5xl mx-auto pt-10 px-5">
-        <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-          Personal Ledger
-        </span>
-        <h1 className="font-heading text-3xl mt-1">PKR Budget Tracker</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Track your expenses and manage your budget
-        </p>
+        <div className="flex items-start justify-between">
+          <div>
+            <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+              Personal Ledger
+            </span>
+            <h1 className="font-heading text-3xl mt-1">PKR Budget Tracker</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Track your expenses and manage your budget
+            </p>
+          </div>
+          <UserButton />
+        </div>
       </header>
-
       <section className="max-w-5xl mx-auto mt-6 px-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <AIInsightCard />
