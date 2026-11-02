@@ -66,7 +66,7 @@ export default function Home() {
             </span>
             <h1 className="font-heading text-3xl mt-1">PKR Budget Tracker</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Track your expenses and manage your budget
+              Track your spending, understand where your PKR is going, and get AI insights, all in one simple place.
             </p>
           </div>
           <UserButton />
