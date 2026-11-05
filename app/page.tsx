@@ -35,8 +35,7 @@ export default function LandingPage() {
               </h1>
 
               <p className="mt-6 max-w-lg text-lg leading-8 text-muted-foreground">
-                Track your spending, manage your kameti, and understand where
-                your PKR is going — all in one simple place.
+                Track your spending, understand where your PKR is going, and get AI insights, all in one simple place.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
