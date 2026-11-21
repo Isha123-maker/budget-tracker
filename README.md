@@ -29,11 +29,11 @@ PKR Budget Tracker helps users record income and expenses, understand their spen
 
 ### Landing Page
 
-![PKR Budget Tracker Landing Page](docs/screenshots/landing-page.png)
+![PKR Budget Tracker Landing Page](docs/screenshots/dashboard.png)
 
 ### Dashboard
 
-![PKR Budget Tracker Dashboard](docs/screenshots/dashboard.png)
+![PKR Budget Tracker Dashboard](docs/screenshots/landing-page.png)
 
 ### AI Spending Insight
 
