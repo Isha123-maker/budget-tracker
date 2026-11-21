@@ -100,7 +100,7 @@ export default function Home() {
 
       <AddTransactionDialog onTransactionAdded={fetchTransactions} />
       <footer className="max-w-5xl mx-auto mt-10 px-5 pb-8 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} PKR Budget Tracker. Built by Noor.
+        © {new Date().getFullYear()} PKR Budget Tracker. Built by Isha Noor.
       </footer>
     </main>
   );

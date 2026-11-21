@@ -544,7 +544,7 @@ Potential future capabilities include:
 
 ## 👨‍💻 Author
 
-**Noor**
+**Isha Noor**
 
 Built as a full-stack learning and portfolio project focused on modern web development, AI integration, and localized financial tooling for Pakistani users.
 
