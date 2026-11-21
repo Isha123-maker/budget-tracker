@@ -5,6 +5,8 @@
 🔗 **Live demo:** [budget-tracker-dev-9aac.vercel.app](https://budget-tracker-dev-9aac.vercel.app)
 *(Sign up with your email to try the dashboard.)*
 
+▶️ **Demo video:** PASTE_YOUR_YOUTUBE_LINK_HERE (https://youtu.be/JeTYRmWmlME)
+
 A modern personal budgeting web application built specifically around Pakistani Rupee (PKR) spending.
 
 PKR Budget Tracker helps users record income and expenses, understand their spending patterns, visualize financial activity, and receive AI-powered insights based on their recent expenses.
