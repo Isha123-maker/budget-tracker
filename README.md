@@ -5,7 +5,7 @@
 🔗 **Live demo:** [budget-tracker-dev-9aac.vercel.app](https://budget-tracker-dev-9aac.vercel.app)
 *(Sign up with your email to try the dashboard.)*
 
-▶️ **Demo video:** PASTE_YOUR_YOUTUBE_LINK_HERE (https://youtu.be/JeTYRmWmlME)
+▶️ [Watch the 50-second demo](https://youtu.be/JeTYRmWmlME)
 
 A modern personal budgeting web application built specifically around Pakistani Rupee (PKR) spending.
 
